@@ -20,10 +20,19 @@ response = requests.get(request_url)
 #print(response.text)
 
 
+latest_day = "2021-03-04"
 
 seg_response = json.loads(response.text)
+
 last_refreshed = seg_response["Meta Data"]["3. Last Refreshed"]
-latest_close = seg_response["Time Series (Daily)"]["2021-03-04"]["4. close"]
+
+tsd = seg_response["Time Series (Daily)"]
+
+dates = list(tsd.keys()) # TODO: Sort so latest day is first
+
+latest_day = dates[0]
+
+latest_close = tsd[latest_day]["4. close"]
 
 def to_usd(my_price):
     return f"${my_price:,.2f}" #> $12,000.71
