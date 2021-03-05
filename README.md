@@ -1,4 +1,4 @@
-# robo-advisor
+# Robo-Advisor Project
 
 Provides automated stock reccomendation based on API 
 

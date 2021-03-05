@@ -1,5 +1,15 @@
 # this is the "app/robo_advisor.py" file
 
+import os
+import csv
+import json
+import requests
+
+from dotenv import load_dotenv
+
+
+
+
 print("-------------------------")
 print("SELECTED SYMBOL: XYZ")
 print("-------------------------")
