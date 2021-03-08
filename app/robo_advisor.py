@@ -49,7 +49,16 @@ for date in dates:
 
 recent_high = max(high_prices)
 recent_low = min(low_prices)
+print(type(latest_close))
+print(type(recent_high))
 
+if float(latest_close) >= .6*recent_high and float(latest_close) <= .8*recent_low:
+    buy_rec = "BUY!" 
+    rec_reason = "STOCK PRICE IS BETWEEN 60% AND 80% OF RECENT HIGH."
+
+else: 
+    buy_rec = "DON'T BUY!"
+    rec_reason = "PRICE IS NOT WITHIN THE ACCEPTABLE RANGE OF RECENT HIGH."
 
 def to_usd(my_price):
     return f"${my_price:,.2f}" #> $12,000.71
@@ -66,8 +75,8 @@ print(f"LATEST CLOSE: {to_usd(float(latest_close))}")
 print(f"RECENT HIGH: {to_usd(float(recent_high))}")
 print(f"RECENT LOW: {to_usd(float(recent_low))}")
 print("-------------------------")
-print("RECOMMENDATION: BUY!")
-print("RECOMMENDATION REASON: TODO")
+print(f"RECOMMENDATION: {buy_rec}")
+print(f"RECOMMENDATION REASON: {rec_reason}")
 print("-------------------------")
 print("HAPPY INVESTING!")
 print("-----")
