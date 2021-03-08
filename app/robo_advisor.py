@@ -5,15 +5,18 @@
 import os
 import csv
 import json
-import requests
 import datetime
 import time
+import sys
+
+
+import requests
+import matplotlib.pyplot as plt
+from dotenv import load_dotenv
+
 
 #Time delay to simulate computer thinking
 delay = 1.5
-
-
-from dotenv import load_dotenv
 
 #loads .env file
 load_dotenv()
@@ -21,23 +24,43 @@ load_dotenv()
 #variable assignmen for unique API key
 apikey = os.environ.get("ALPHAVANTAGE_API_KEY")
 
+#Data Validation for incorrect ticket entry
 while True:
-    #Data Validation for incorrect ticket entry
-    try: 
-        symbol = input("Enter stock symbol for analysis. For example, AAPL, JNJ, etc.").upper()
-        #Variable assignment to URL for ticker data
-        request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={apikey}"
-
-        #Requests URL data
-        response = requests.get(request_url)
-        #Loads URL text
-        seg_response = json.loads(response.text)
-        #assigns variable to get into library
+    symbol = input("Enter stock symbol for analysis. For example, AAPL, JNJ, etc.")
+    if type(symbol) == str:
+        if len(symbol) < 5:
+            #Variable assignment to URL for ticker data
+            request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={apikey}"
+        else:
+            again = input("Hmm..that doesn't appear to be a valid entry. Would you like to try again? Yes or No?").lower()
+            if again == "yes":
+                True
+            else:
+                print("Okay! Happy Investing!") 
+                sys.exit()
+    else:
+        again = input("Hmm..that doesn't appear to be a valid entry. Would you like to try again? Yes or No?").lower()
+        if again == "yes":
+            True
+        else:
+            print("Okay! Happy Investing!")
+            sys.exit()
+  
+    #Requests URL data
+    response = requests.get(request_url)
+    #Loads URL text
+    seg_response = json.loads(response.text)
+    #assigns variable to get into library
+    try:
         tsd = seg_response["Time Series (Daily)"]
         break
     except:
-        time.sleep(delay)
-        print("Hmm...it appears that you did not enter a valid symbol! Try again")
+        again = input("GHmm..that doesn't appear to be a valid entry. Would you like to try again? Yes or No?").lower()
+        if again == "yes":
+            True
+        else:
+            print("Okay! Happy Investing!")
+            sys.exit()
 
 #Assigns the dates into a list called dates
 dates = list(tsd.keys())
@@ -51,13 +74,15 @@ latest_close = tsd[latest_day]["4. close"]
 
 high_prices = []
 low_prices = []
-
+closing_prices = []
 #Loops from to find high and low prices for each day and appends them to the respective dictionaries
 for date in dates:
     high_price = tsd[date]["2. high"]
     low_price = tsd[date]["3. low"]
+    closing_price = tsd[date]["4. close"]
     high_prices.append(float(high_price))
     low_prices.append(float(low_price))
+    closing_prices.append(float(closing_price))
 
 #Returns high and low prices in the list
 recent_high = max(high_prices)
@@ -123,3 +148,9 @@ time.sleep(delay)
 print("-------------------------")
 print("HAPPY INVESTING!")
 print("-----")
+
+plt.plot(dates,closing_prices)
+plt.title('Prices over time')
+plt.xlabel('Time')
+plt.ylabel('Closing Price')
+plt.show()
