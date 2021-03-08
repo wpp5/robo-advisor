@@ -5,7 +5,10 @@ import csv
 import json
 import requests
 
+
 from dotenv import load_dotenv
+
+load_dotenv()
 
 #
 # INFO INPUTS
@@ -34,9 +37,19 @@ latest_day = dates[0]
 
 latest_close = tsd[latest_day]["4. close"]
 
+high_prices = []
+#maximum of all high prices
+for date in dates:
+    high_price = tsd[latest_day]["2. high"]
+    high_prices.append(float(high_price))
+    
+
+recent_high = max(high_prices)
+
+
+
 def to_usd(my_price):
     return f"${my_price:,.2f}" #> $12,000.71
-
 
 
 print("-------------------------")
@@ -47,7 +60,7 @@ print("REQUEST AT: 2018-02-20 02:00pm")
 print("-------------------------")
 print(f"LATEST DAY: {last_refreshed}")
 print(f"LATEST CLOSE: {to_usd(float(latest_close))}")
-print("RECENT HIGH: $101,000.00")
+print(f"RECENT HIGH: {to_usd(float(recent_high))}")
 print("RECENT LOW: $99,000.00")
 print("-------------------------")
 print("RECOMMENDATION: BUY!")

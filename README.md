@@ -8,6 +8,10 @@ https://github.com/wpp5/robo-advisor
 Instructions for the project:
 https://github.com/prof-rossetti/intro-to-python/blob/master/projects/robo-advisor/README.md
 
+Guided walkthrough by Michael Rossetti was used in the creation of the code:
+https://www.youtube.com/watch?v=UXAVOP1oCog&t=847s
+
+
 ## Setup
 
 Clone or download repo from https://github.com/wpp5/robo-advisor onto your desktop
@@ -53,10 +57,10 @@ pip install -r requirements.txt
 
 ## Usage
 
-Run the following program:
+After navigating to the library (instructions in Setup), run the following program:
 
 ```sh
-python robo-advisor.py
+python app/robo_advisor.py
 ```
 
 
