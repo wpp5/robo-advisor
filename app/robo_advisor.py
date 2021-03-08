@@ -4,7 +4,8 @@ import os
 import csv
 import json
 import requests
-
+import datetime
+import time
 
 from dotenv import load_dotenv
 
@@ -68,7 +69,8 @@ print("-------------------------")
 print("SELECTED SYMBOL: XYZ")
 print("-------------------------")
 print("REQUESTING STOCK MARKET DATA...")
-print("REQUEST AT: 2018-02-20 02:00pm")
+now = datetime.datetime.now()
+print("REQUEST AT:", now.strftime("%Y-%m-%d %I:%M %p"))
 print("-------------------------")
 print(f"LATEST DAY: {last_refreshed}")
 print(f"LATEST CLOSE: {to_usd(float(latest_close))}")
