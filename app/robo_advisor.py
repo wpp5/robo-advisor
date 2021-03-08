@@ -64,6 +64,15 @@ else:
 def to_usd(my_price):
     return f"${my_price:,.2f}" #> $12,000.71
 
+csv_file_path = "data/prices.csv" # a relative filepath
+
+with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writing"
+    writer = csv.DictWriter(csv_file, fieldnames=["city", "name"])
+    writer.writeheader() # uses fieldnames set above
+    writer.writerow({"city": "New York", "name": "Yankees"})
+    writer.writerow({"city": "New York", "name": "Mets"})
+    writer.writerow({"city": "Boston", "name": "Red Sox"})
+    writer.writerow({"city": "New Haven", "name": "Ravens"})
 
 print("-------------------------")
 print("SELECTED SYMBOL: XYZ")
@@ -79,6 +88,8 @@ print(f"RECENT LOW: {to_usd(float(recent_low))}")
 print("-------------------------")
 print(f"RECOMMENDATION: {buy_rec}")
 print(f"RECOMMENDATION REASON: {rec_reason}")
+print("-------------------------")
+print("WRITING DATA TO CSV...")
 print("-------------------------")
 print("HAPPY INVESTING!")
 print("-----")
