@@ -15,20 +15,19 @@ load_dotenv()
 # INFO INPUTS
 #
 
-request_url = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=IBM&apikey=demo"
-response = requests.get(request_url)
+apikey = os.environ.get("ALPHAVANTAGE_API_KEY")
+while True:
+    try: 
+        symbol = input("Enter stock symbol for analysis. For example, AAPL, JNJ, etc.").upper()
+        request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={apikey}"
+        response = requests.get(request_url)
 
-#print(type(response))
-#print(response.status_code)
-#print(response.status_code)
-#print(response.text)
+        seg_response = json.loads(response.text)
 
-
-latest_day = "2021-03-04"
-
-seg_response = json.loads(response.text)
-
-last_refreshed = seg_response["Meta Data"]["3. Last Refreshed"]
+        last_refreshed = seg_response["Meta Data"]["3. Last Refreshed"]
+        break
+    except:
+        print("Hmm...it appears that you did not enter a valid symbol! Try again")
 
 tsd = seg_response["Time Series (Daily)"]
 
@@ -42,18 +41,17 @@ high_prices = []
 low_prices = []
 #maximum of all high prices
 for date in dates:
-    high_price = tsd[latest_day]["2. high"]
-    low_price = tsd[latest_day]["3. low"]
+    high_price = tsd[date]["2. high"]
+    low_price = tsd[date]["3. low"]
     high_prices.append(float(high_price))
     low_prices.append(float(low_price))
 
 
 recent_high = max(high_prices)
 recent_low = min(low_prices)
-print(type(latest_close))
-print(type(recent_high))
 
-if float(latest_close) >= .6*recent_high and float(latest_close) <= .8*recent_low:
+
+if float(latest_close) >= .6*recent_high and float(latest_close) <= .8*recent_high:
     buy_rec = "BUY!" 
     rec_reason = "STOCK PRICE IS BETWEEN 60% AND 80% OF RECENT HIGH."
 
@@ -71,9 +69,9 @@ csv_headers = ["timestamp", "open", "high", "low", "close", "volume"]
 with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writing"
     writer = csv.DictWriter(csv_file, fieldnames=csv_headers)
     writer.writeheader() # uses fieldnames set above
-    daily_prices = tsd[date]
     #looping
     for date in dates:
+        daily_prices = tsd[date]
         writer.writerow({
             "timestamp": date,
             "open": daily_prices["1. open"],
