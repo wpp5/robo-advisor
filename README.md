@@ -11,6 +11,8 @@ https://github.com/prof-rossetti/intro-to-python/blob/master/projects/robo-advis
 Guided walkthrough by Michael Rossetti was used in the creation of the code:
 https://www.youtube.com/watch?v=UXAVOP1oCog&t=847s
 
+The line graph challenge has been completed
+
 
 ## Setup
 
