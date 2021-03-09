@@ -1,5 +1,6 @@
 # this is the "app/robo_advisor.py" file
 # The code will take a ticket symbol from the user and return various information including a buy/don't buy reccomendation 
+# The code will also present a line graph of closing prices over time
 
 #Importing packages and modules
 import os
@@ -11,6 +12,9 @@ import sys
 
 
 import requests
+
+#imported for the line graph 
+
 import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 
@@ -23,44 +27,45 @@ load_dotenv()
 
 #variable assignmen for unique API key
 apikey = os.environ.get("ALPHAVANTAGE_API_KEY")
-
 #Data Validation for incorrect ticket entry
-while True:
+again = "yes"
+while again == "yes":
     symbol = input("Enter stock symbol for analysis. For example, AAPL, JNJ, etc.")
-    if type(symbol) == str:
+    if symbol.isnumeric() == False:
         if len(symbol) < 5:
             #Variable assignment to URL for ticker data
             request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={apikey}"
+            #Requests URL data
+            response = requests.get(request_url)
+            #Loads URL text
+            seg_response = json.loads(response.text)
+            #assigns variable to get into library
+            try:
+                tsd = seg_response["Time Series (Daily)"]
+                break
+            except:
+                again = input("Hmm..that doesn't appear to be a valid entry. Would you like to try again? Yes or No?").lower()
+                if again == "yes":
+                    print("Let's try this again")
+                else:
+                    print("Okay! Happy Investing!")
+                    sys.exit()
+
         else:
             again = input("Hmm..that doesn't appear to be a valid entry. Would you like to try again? Yes or No?").lower()
             if again == "yes":
-                True
+                print("Let's try this again")
             else:
                 print("Okay! Happy Investing!") 
                 sys.exit()
     else:
         again = input("Hmm..that doesn't appear to be a valid entry. Would you like to try again? Yes or No?").lower()
         if again == "yes":
-            True
+            print("Let's try this again!")
         else:
             print("Okay! Happy Investing!")
             sys.exit()
   
-    #Requests URL data
-    response = requests.get(request_url)
-    #Loads URL text
-    seg_response = json.loads(response.text)
-    #assigns variable to get into library
-    try:
-        tsd = seg_response["Time Series (Daily)"]
-        break
-    except:
-        again = input("GHmm..that doesn't appear to be a valid entry. Would you like to try again? Yes or No?").lower()
-        if again == "yes":
-            True
-        else:
-            print("Okay! Happy Investing!")
-            sys.exit()
 
 #Assigns the dates into a list called dates
 dates = list(tsd.keys())
@@ -149,8 +154,20 @@ print("-------------------------")
 print("HAPPY INVESTING!")
 print("-----")
 
+
+#The following code will create a line graph of closing price over time
+#Re-sort the data for charting purposes 
+dates.sort(reverse=False)
+closing_prices=[]
+for date in dates:
+    closing_price = tsd[date]["4. close"]   
+    closing_prices.append(float(closing_price))
+
 plt.plot(dates,closing_prices)
-plt.title('Prices over time')
+plt.title(["Prices over Three Month Period for",symbol])
 plt.xlabel('Time')
 plt.ylabel('Closing Price')
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.gcf().autofmt_xdate()
 plt.show()
